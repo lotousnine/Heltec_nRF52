@@ -734,6 +734,26 @@ void LoRaWanClass::setDefaultDR(int8_t dataRate)
 	defaultDrForNoAdr = dataRate;
 }
 
+uint8_t getHardwareVersion()
+{
+  uint8_t hard_ver;
+  
+  flash_nrf5x_read(&hard_ver,HARD_VERSION_ADDR,1);
+  if(hard_ver==0XFF)
+  {
+    hard_ver=0;
+  }
+  return hard_ver;
+}
 
+void setHardwareVersion(uint8_t hard_ver)
+{
+  uint8_t data_temp[17];
+  data_temp[0]=hard_ver;
+  flash_nrf5x_read(&data_temp[1],HT_LICENSE_ADDR,16);
+  flash_nrf5x_erase(HT_LICENSE_ADDR_BASE);
+  flash_nrf5x_write(HARD_VERSION_ADDR,(uint8_t *)data_temp,17);
+  flash_nrf5x_flush();
+}
 LoRaWanClass LoRaWAN;
 
